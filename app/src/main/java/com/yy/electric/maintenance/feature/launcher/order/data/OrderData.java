@@ -5,6 +5,8 @@ import java.util.List;
 public class OrderData {
   private static final String TAG = "OrderData";
 
+  public static final String REPAIR_STATUS_PROCESSING = "处理中";
+
   public DataShape dataShape;
 
   public List<Row> rows;

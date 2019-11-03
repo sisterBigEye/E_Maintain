@@ -49,6 +49,18 @@
             android:screenOrientation="portrait"
             android:theme="@style/Dialog.Theme"/>
 
+        <activity
+            android:name=".feature.video.list.VideoGirdActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".feature.video.detail.VideoDetailActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape" />
+
     </application>
 
 </manifest>

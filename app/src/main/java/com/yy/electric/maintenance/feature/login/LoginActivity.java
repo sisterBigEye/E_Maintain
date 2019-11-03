@@ -24,8 +24,6 @@ import com.yy.electric.maintenance.widget.WaitBar;
 
 import java.util.Arrays;
 
-;
-
 public class LoginActivity extends BaseActivity implements LoginContract.View<UserInfo>, View.OnClickListener {
 
   private static final String TAG = "LoginActivity";

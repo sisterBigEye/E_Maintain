@@ -1,5 +1,6 @@
 package com.yy.electric.maintenance.feature.launcher.order;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,6 +21,7 @@ import com.yy.electric.maintenance.feature.launcher.order.data.OrderData;
 import com.yy.electric.maintenance.feature.launcher.order.data.OrderDealData;
 import com.yy.electric.maintenance.feature.launcher.order.data.OrderDetailData;
 import com.yy.electric.maintenance.feature.launcher.order.data.OverOrderResult;
+import com.yy.electric.maintenance.feature.video.list.VideoGirdActivity;
 import com.yy.electric.maintenance.util.LogUtil;
 import com.yy.electric.maintenance.util.ToastUtil;
 
@@ -39,10 +41,13 @@ public class WorkOrderFragment extends BaseFragment implements OrderContract.Vie
   private View mDetailInfoPage;
   private OrderData.Row mCurrentClickRow;
   private Button mDetailBtn;
+  private Button mCameraBtn;
 
   private TextView mOrderDescTv;
   private EditText mHandleResultEt;
   private EditText mRemarkEt;
+
+  private Intent mVideoIntent;
 
   @Nullable
   @Override
@@ -82,6 +87,8 @@ public class WorkOrderFragment extends BaseFragment implements OrderContract.Vie
     mBaseView.findViewById(R.id.btn_deal_order).setOnClickListener(this);
     mDetailBtn = mBaseView.findViewById(R.id.btn_check_order);
     mDetailBtn.setOnClickListener(this);
+    mCameraBtn = mBaseView.findViewById(R.id.btn_camera_order);
+    mCameraBtn.setOnClickListener(this);
     mListPage = mBaseView.findViewById(R.id.ll_first_page_order);
     mDetailInfoPage = mBaseView.findViewById(R.id.ll_second_page_order);
     mTitleTv.setText("我的工单");
@@ -103,7 +110,7 @@ public class WorkOrderFragment extends BaseFragment implements OrderContract.Vie
         }
         temp.isSelect = true;
         mCurrentClickRow = temp;
-        mAdapter.notifyDataSetChanged();
+        handlerUi();
       }
     });
   }
@@ -120,6 +127,8 @@ public class WorkOrderFragment extends BaseFragment implements OrderContract.Vie
 
   @Override
   public void updateOrderData(OrderData orderData) {
+    LogUtil.w(TAG, "updateOrderData() orderData=" + orderData);
+    mCameraBtn.setVisibility(View.GONE);
     mCurrentClickRow = null;
     if (orderData == null) {
       mAdapter.clear();
@@ -164,7 +173,7 @@ public class WorkOrderFragment extends BaseFragment implements OrderContract.Vie
       return;
     }
     for (OrderDealData.Row row : data.rows) {
-      if(row.result == null) {
+      if (row.result == null) {
         continue;
       }
       if (row.result.equals("成功")) {
@@ -243,6 +252,18 @@ public class WorkOrderFragment extends BaseFragment implements OrderContract.Vie
         presenter.overOrder(mOverOrderRequest);
         break;
 
+      case R.id.btn_camera_order:
+        if (mCurrentClickRow == null) {
+          LogUtil.w(TAG, "onClick() camera, CurrentClickRow is null");
+          return;
+        }
+        if (mVideoIntent == null) {
+          mVideoIntent = new Intent(getActivity(), VideoGirdActivity.class);
+        }
+        mVideoIntent.putExtra(VideoGirdActivity.INTENT_EXTRA_KEY_VIDEO_LIST, mCurrentClickRow.usersource);
+        startActivity(mVideoIntent);
+        break;
+
 
       default:
         break;
@@ -289,7 +310,6 @@ public class WorkOrderFragment extends BaseFragment implements OrderContract.Vie
       return;
     }
 
-
     if (mCurrentClickRow.repairstatus != null && mCurrentClickRow.repairstatus.equals("已接单")) {
       dealRequest.repairSN = mCurrentClickRow.repairsn;
       presenter.dealOrder();
@@ -297,5 +317,17 @@ public class WorkOrderFragment extends BaseFragment implements OrderContract.Vie
       ToastUtil.toast("工单已处理");
       LogUtil.d(TAG, "updateOrderDealData() 工单已处理");
     }
+  }
+
+  private void handlerUi() {
+    if (mCurrentClickRow == null) {
+      return;
+    }
+    if (mCurrentClickRow.repairstatus.equals(OrderData.REPAIR_STATUS_PROCESSING)) {
+      mCameraBtn.setVisibility(View.VISIBLE);
+    } else {
+      mCameraBtn.setVisibility(View.GONE);
+    }
+    mAdapter.notifyDataSetChanged();
   }
 }
