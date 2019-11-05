@@ -182,6 +182,7 @@ public class HttpApi {
         LogUtil.d(TAG, "requestByPost() --- response is not Successful");
         return null;
       }
+      LogUtil.d(TAG, "requestByPost() --- response is Successful");
       ResponseBody responseBody = response.body();
       if (responseBody == null) {
         LogUtil.d(TAG, "requestByPost() --- responseBody is null");

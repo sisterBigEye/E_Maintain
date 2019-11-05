@@ -3,27 +3,33 @@ package com.yy.electric.maintenance.feature.video.list;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.yy.electric.maintenance.R;
 import com.yy.electric.maintenance.base.BaseActivity;
-import com.yy.electric.maintenance.feature.video.detail.VideoDetailActivity;
+import com.yy.electric.maintenance.feature.video.detail.VideoControlActivity;
 import com.yy.electric.maintenance.feature.video.detail.VideoDetailManager;
+import com.yy.electric.maintenance.feature.video.gird.VideoListInfo;
 import com.yy.electric.maintenance.util.LogUtil;
 import com.yy.electric.maintenance.util.ToastUtil;
 
-public class VideoGirdActivity extends BaseActivity implements VideoListContract.View<VideoListInfo>, VideoListAdapter.OnItemClickListener {
+import java.util.List;
 
-  private static final String TAG = "VideoGirdActivity";
-  public static final String INTENT_EXTRA_KEY_VIDEO_LIST = "videoList";
+public class VideoListActivity extends BaseActivity implements
+        VideoListContract.View<VideoListInfo>, VideoListAdapter.OnItemClickListener, View.OnClickListener {
+
+  private static final String TAG = "VideoListActivity";
   private VideoListRequest mRequest;
   private VideoListContract.Presenter presenter;
   private VideoListAdapter mAdapter;
-  private TextView mHeadTv;
   private Intent mDetailIntent;
+
+  private EditText mSearchEt;
+  private Button mSearchBtn;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,14 +38,24 @@ public class VideoGirdActivity extends BaseActivity implements VideoListContract
   }
 
   private void init() {
-    mHeadTv = findViewById(R.id.tv_head_video_list);
+    mSearchEt = findViewById(R.id.et_search_video_list);
+    mSearchBtn = findViewById(R.id.btn_search_video_list);
+    mSearchBtn.setOnClickListener(this);
+
     mAdapter = new VideoListAdapter(this);
     RecyclerView view = findViewById(R.id.rv_content_video_list);
-    GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+    LinearLayoutManager layoutManager = new LinearLayoutManager(this);
     view.setLayoutManager(layoutManager);
     view.setAdapter(mAdapter);
+    List<VideoListInfo.Row> list = VideoDetailManager.getInstance().getVideoInfoList();
+    mAdapter.addList(list);
 
-    handleIntentData();
+    mRequest = new VideoListRequest();
+    mRequest.url = "Baoding_VideoThing/Services/SelectVideoByKeyword?";
+    mRequest.username = VideoDetailManager.getInstance().getVideoUserName();
+    ;
+    mRequest.keyword = "";
+    presenter = new VideoListPresenter(this, mRequest);
   }
 
   @Override
@@ -49,37 +65,14 @@ public class VideoGirdActivity extends BaseActivity implements VideoListContract
 
   @Override
   protected String toolBarTitle() {
-    return "视频";
-  }
-
-  private void handleIntentData() {
-    Intent intent = getIntent();
-    String useName = intent.getStringExtra(INTENT_EXTRA_KEY_VIDEO_LIST);
-    if (useName == null) {
-      LogUtil.d(TAG, "handleIntentData() useName is null");
-      ToastUtil.toast("无效的用户");
-      finish();
-      return;
-    }
-    mRequest = new VideoListRequest();
-    mRequest.url = "Baoding_VideoThing/Services/SelectCarmeraVideoByUsername?";
-    mRequest.username = useName;
-    presenter = new VideoListPresenter(this, mRequest);
-    presenter.start();
-
+    return "所有视频";
   }
 
   @Override
   public void videoListResult(VideoListInfo videoListInfo) {
     LogUtil.d(TAG, "videoListResult() videoListInfo=" + videoListInfo);
     if (videoListInfo == null) {
-      mHeadTv.setVisibility(View.INVISIBLE);
       return;
-    }
-    if (videoListInfo.rows.size() > 4) {
-      mHeadTv.setVisibility(View.VISIBLE);
-    } else {
-      mHeadTv.setVisibility(View.INVISIBLE);
     }
     mAdapter.addList(videoListInfo.rows);
   }
@@ -102,8 +95,20 @@ public class VideoGirdActivity extends BaseActivity implements VideoListContract
     }
     VideoDetailManager.getInstance().setVideoDetailInfo(row);
     if (mDetailIntent == null) {
-      mDetailIntent = new Intent(this, VideoDetailActivity.class);
+      mDetailIntent = new Intent(this, VideoControlActivity.class);
     }
     startActivity(mDetailIntent);
+  }
+
+  @Override
+  public void onClick(View v) {
+    switch (v.getId()) {
+      case R.id.btn_search_video_list:
+        ToastUtil.toast("开始搜索");
+        String keyword = mSearchEt.getText().toString().trim();
+        mRequest.keyword = keyword;
+        presenter.start();
+        break;
+    }
   }
 }

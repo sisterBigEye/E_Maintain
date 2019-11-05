@@ -1,4 +1,4 @@
-package com.yy.electric.maintenance.feature.video.list;
+package com.yy.electric.maintenance.feature.video.gird;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -10,12 +10,12 @@ import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.yy.electric.maintenance.R;
-import com.yy.electric.maintenance.feature.video.gird.VideoListInfo;
+import com.yy.electric.maintenance.util.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Holder> {
+public class VideoGirdAdapter extends RecyclerView.Adapter<VideoGirdAdapter.Holder> {
 
   private static final String TAG = "VideoGirdAdapter";
 
@@ -25,8 +25,9 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Hold
 
   public static final int TYPE_GIRD = 0;
   public static final int TYPE_LIST = 1;
+  public static final int MAX_SIZE = 4;
 
-  public VideoListAdapter(OnItemClickListener listener) {
+  public VideoGirdAdapter(OnItemClickListener listener) {
     mList = new ArrayList<>();
     this.listener = listener;
   }
@@ -41,9 +42,9 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Hold
         break;
     }
     View view = LayoutInflater.from(viewGroup.getContext())
-            .inflate(R.layout.item_rv_video_list, viewGroup, false);
+            .inflate(R.layout.item_rv_video_gird, viewGroup, false);
     final Holder holder = new Holder(view);
-    holder.mDetailTv.setOnClickListener(new View.OnClickListener() {
+    holder.itemView.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         if (listener != null) {
@@ -60,9 +61,11 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Hold
     if (row == null) {
       return;
     }
-    holder.mUserTv.setText("设备端用户：  " + row.username);
-    holder.mCameraTypeTv.setText("摄像机类型：  " + row.cameratype);
-    holder.mVideoName.setText("视频名称：  " + row.specificname);
+    holder.mTitle.setText(row.specificname);
+    if (TextUtils.isEmpty(row.videourl)) {
+      return;
+    }
+    playWebView(holder.mWeb, row.videourl);
   }
 
   public void addList(List<VideoListInfo.Row> rows) {
@@ -70,7 +73,12 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Hold
     if (rows == null) {
       return;
     }
-    mList.addAll(rows);
+    for (int i = 0; i < rows.size(); i++) {
+      if (i >= MAX_SIZE) {
+        break;
+      }
+      mList.add(rows.get(i));
+    }
     notifyDataSetChanged();
   }
 
@@ -79,24 +87,45 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.Hold
     return mList.size();
   }
 
+  public void destroy() {
+  }
+
   static class Holder extends RecyclerView.ViewHolder {
 
-    private TextView mUserTv;
-    private TextView mCameraTypeTv;
-    private TextView mVideoName;
-    private TextView mDetailTv;
+    private TextView mTitle;
+    private WebView mWeb;
 
     Holder(@NonNull View itemView) {
       super(itemView);
-      mUserTv = itemView.findViewById(R.id.tv_user_video_list_item);
-      mCameraTypeTv = itemView.findViewById(R.id.tv_camera_type_video_list_item);
-      mVideoName = itemView.findViewById(R.id.tv_name_video_list_item);
-      mDetailTv = itemView.findViewById(R.id.tv_detail_video_list_item);
+      mTitle = itemView.findViewById(R.id.tv_video_gird_item);
+      mWeb = itemView.findViewById(R.id.wv_video_gird_item);
     }
   }
 
   public interface OnItemClickListener {
 
     void onItemClick(VideoListInfo.Row row);
+  }
+
+  private void playWebView(WebView webView, String url) {
+    LogUtil.d(TAG, "playWebView() url=" + url);
+    if (url == null || TextUtils.isEmpty(url)) {
+      return;
+    }
+    webView.reload();
+
+    webView.getSettings().setJavaScriptEnabled(true);
+
+    //mVideoWv.getSettings().setPluginsEnabled(true);
+
+    //mVideoWv.getSettings().setPluginState(WebSettings.PluginState.ON);
+
+    webView.setVisibility(View.VISIBLE);
+
+    webView.getSettings().setUseWideViewPort(true);
+
+    webView.loadUrl(url);
+
+
   }
 }

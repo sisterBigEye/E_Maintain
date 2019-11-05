@@ -1,19 +1,18 @@
-package com.yy.electric.maintenance.feature.video.list;
+package com.yy.electric.maintenance.feature.video.gird;
 
 import com.yy.electric.maintenance.api.Callback;
 import com.yy.electric.maintenance.api.ITask;
-import com.yy.electric.maintenance.feature.video.gird.VideoListInfo;
 import com.yy.electric.maintenance.task.RequestDataTask;
 import com.yy.electric.maintenance.util.LogUtil;
 
-public class VideoListPresenter implements VideoListContract.Presenter {
-  private static final String TAG = "VideoListPresenter";
-  private VideoListContract.View<VideoListInfo> view;
-  private VideoListRequest mRequest;
+public class VideoGirdPresenter implements VideoGirdContract.Presenter {
+  private static final String TAG = "VideoGirdPresenter";
+  private VideoGirdContract.View<VideoListInfo> view;
+  private VideoGirdRequest mRequest;
 
   private ITask<VideoListInfo> task;
 
-  VideoListPresenter(VideoListContract.View<VideoListInfo> view, VideoListRequest request) {
+  VideoGirdPresenter(VideoGirdContract.View<VideoListInfo> view, VideoGirdRequest request) {
     this.view = view;
     this.mRequest = request;
     this.view.setPersonal(this);

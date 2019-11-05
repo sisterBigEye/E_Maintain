@@ -9,7 +9,7 @@
 
     <application
         android:name="com.yy.electric.maintenance.ElectricApplication"
-        android:allowBackup="false"
+        android:allowBackup="true"
         android:icon="@mipmap/ic_icon"
         android:label="@string/app_name"
         android:networkSecurityConfig="@xml/network_security_config"
@@ -50,16 +50,29 @@
             android:theme="@style/Dialog.Theme"/>
 
         <activity
-            android:name=".feature.video.list.VideoGirdActivity"
+            android:name=".feature.video.gird.VideoGirdActivity"
             android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".feature.video.detail.VideoDetailActivity"
+            android:name=".feature.video.list.VideoListActivity"
             android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleTask"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".feature.video.detail.VideoControlActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".feature.video.detail.TimePickActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/Dialog.Theme" />
 
     </application>
 

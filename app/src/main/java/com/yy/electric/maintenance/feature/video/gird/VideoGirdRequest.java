@@ -1,17 +1,15 @@
-package com.yy.electric.maintenance.feature.video.list;
+package com.yy.electric.maintenance.feature.video.gird;
 
 import com.yy.electric.maintenance.base.BaseResult;
 
-public class VideoListRequest extends BaseResult {
+public class VideoGirdRequest extends BaseResult {
 
   public String username;
-  public String keyword;
 
   @Override
   public String toString() {
-    return "VideoListRequest{" +
+    return "VideoGirdRequest{" +
             "username='" + username + '\'' +
-            "keyword='" + keyword + '\'' +
             ", url='" + url + '\'' +
             '}';
   }

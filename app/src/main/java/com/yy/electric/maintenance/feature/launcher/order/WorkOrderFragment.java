@@ -21,7 +21,7 @@ import com.yy.electric.maintenance.feature.launcher.order.data.OrderData;
 import com.yy.electric.maintenance.feature.launcher.order.data.OrderDealData;
 import com.yy.electric.maintenance.feature.launcher.order.data.OrderDetailData;
 import com.yy.electric.maintenance.feature.launcher.order.data.OverOrderResult;
-import com.yy.electric.maintenance.feature.video.list.VideoGirdActivity;
+import com.yy.electric.maintenance.feature.video.gird.VideoGirdActivity;
 import com.yy.electric.maintenance.util.LogUtil;
 import com.yy.electric.maintenance.util.ToastUtil;
 
