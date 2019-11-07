@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.yy.electric.maintenance.R;
@@ -104,7 +105,13 @@ public class VideoControlActivity extends BaseActivity implements View.OnClickLi
 
     mVideoWv.reload();
 
-    mVideoWv.getSettings().setJavaScriptEnabled(true);
+    WebSettings settings = mVideoWv.getSettings();
+
+    settings.setJavaScriptEnabled(true);
+
+    //settings.setUseWideViewPort(true);
+
+    settings.setLoadWithOverviewMode(true);
 
     //mVideoWv.getSettings().setPluginsEnabled(true);
 
@@ -112,7 +119,7 @@ public class VideoControlActivity extends BaseActivity implements View.OnClickLi
 
     mVideoWv.setVisibility(View.VISIBLE);
 
-    mVideoWv.getSettings().setUseWideViewPort(true);
+    settings.setUseWideViewPort(true);
 
     mVideoWv.loadUrl(url);
 

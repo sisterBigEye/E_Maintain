@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.TextView;
 
@@ -114,7 +115,13 @@ public class VideoGirdAdapter extends RecyclerView.Adapter<VideoGirdAdapter.Hold
     }
     webView.reload();
 
-    webView.getSettings().setJavaScriptEnabled(true);
+    WebSettings settings = webView.getSettings();
+
+    settings.setJavaScriptEnabled(true);
+
+    //settings.setUseWideViewPort(true);
+
+    settings.setLoadWithOverviewMode(true);
 
     //mVideoWv.getSettings().setPluginsEnabled(true);
 
@@ -122,7 +129,7 @@ public class VideoGirdAdapter extends RecyclerView.Adapter<VideoGirdAdapter.Hold
 
     webView.setVisibility(View.VISIBLE);
 
-    webView.getSettings().setUseWideViewPort(true);
+    settings.setUseWideViewPort(true);
 
     webView.loadUrl(url);
 
